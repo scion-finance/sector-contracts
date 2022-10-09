@@ -8,6 +8,8 @@ import { IPostOffice } from "../interfaces/postOffice/IPostOffice.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import "../interfaces/MsgStructs.sol";
 
+import "hardhat/console.sol";
+
 struct chainPair {
 	uint16 from;
 	uint16 to;
@@ -43,9 +45,10 @@ contract LayerZeroPostman is ILayerZeroReceiver, ILayerZeroUserApplicationConfig
 		Message calldata _msg,
 		address _dstVautAddress,
 		address _dstPostman,
-		uint16 _messageType,
+		messageType _messageType,
 		uint16 _dstChainId
 	) external {
+
 		if (msg.sender != address(postOffice)) revert OnlyPostOffice();
 		if (address(this).balance == 0) revert NoBalance();
 
@@ -64,6 +67,9 @@ contract LayerZeroPostman is ILayerZeroReceiver, ILayerZeroUserApplicationConfig
 			adapterParams
 		);
 		if (address(this).balance < messageFee) revert InsufficientBalanceToSendMessage();
+
+
+		console.log("testing dest chain id", uint16(chains[_dstChainId]));
 
 		// send LayerZero message
 		endpoint.send{ value: messageFee }( // {value: messageFee} will be paid out of this contract!

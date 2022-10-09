@@ -53,14 +53,12 @@ contract PostOffice is Ownable {
 
 		if (receiver.srcPostmanId == 0) revert AddressNotInBook(receiverAddr);
 
-		console.log(addrBook.postman[receiver.srcPostmanId]);
-
 		IPostman(addrBook.postman[receiver.srcPostmanId]).deliverMessage(
 			message,
 			receiverAddr,
 			addrBook.postman[receiver.dstPostmanId],
 			msgType,
-			uint16(block.chainid)
+			1
 		);
 
 		emit MessageSent(receiverAddr, message.value, message.sender, message.chainId, msgType);
