@@ -5,6 +5,7 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IPostman } from "../interfaces/postOffice/IPostman.sol";
 import { XChainIntegrator } from "../common/XChainIntegrator.sol";
 import "../interfaces/MsgStructs.sol";
+import "hardhat/console.sol";
 
 struct Client {
 	uint16 chainId;
@@ -52,6 +53,8 @@ contract PostOffice is Ownable {
 
 		if (receiver.srcPostmanId == 0) revert AddressNotInBook(receiverAddr);
 
+		console.log(addrBook.postman[receiver.srcPostmanId]);
+
 		IPostman(addrBook.postman[receiver.srcPostmanId]).deliverMessage(
 			message,
 			receiverAddr,
@@ -59,6 +62,7 @@ contract PostOffice is Ownable {
 			msgType,
 			uint16(block.chainid)
 		);
+
 		emit MessageSent(receiverAddr, message.value, message.sender, message.chainId, msgType);
 	}
 
