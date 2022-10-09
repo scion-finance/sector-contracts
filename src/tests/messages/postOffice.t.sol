@@ -55,11 +55,11 @@ contract PostOfficeTest is SectorTest {
 
 		// set new client with postmen to send messages to ethereum mainnet
 		postOffice.addClient(_srcVault, 1, 2, uint16(block.chainid));
-		postOffice.addClient(_dstVault, 1, 2, 43113);
+		postOffice.addClient(_dstVault, 1, 2, 4002);
 
 		vm.startPrank(_srcVault);
 
-		postOffice.sendMessage(_dstVault, _msg, messageType.DEPOSIT);
+		postOffice.sendMessage(_dstVault, _msg, 4002, messageType.DEPOSIT);
 
 		vm.stopPrank();
 	}
