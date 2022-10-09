@@ -3,6 +3,7 @@ pragma solidity 0.8.16;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IPostman } from "../interfaces/postOffice/IPostman.sol";
+import { IPostOffice } from "../interfaces/postOffice/IPostOffice.sol";
 import { XChainIntegrator } from "../common/XChainIntegrator.sol";
 import "../interfaces/MsgStructs.sol";
 import "hardhat/console.sol";
@@ -29,7 +30,7 @@ struct Message {
 }
 */
 
-contract PostOffice is Ownable {
+contract PostOffice is Ownable, IPostOffice {
 	mapping(address => mapping(messageType => Message[])) internal messageBoard;
 	AddressBook internal addrBook;
 
@@ -44,6 +45,7 @@ contract PostOffice is Ownable {
 	function sendMessage(
 		address receiverAddr,
 		Message calldata message,
+		uint16 receiverChainId,
 		messageType msgType
 	) external {
 		if (addrBook.info[msg.sender].chainId != block.chainid)
@@ -58,7 +60,7 @@ contract PostOffice is Ownable {
 			receiverAddr,
 			addrBook.postman[receiver.dstPostmanId],
 			msgType,
-			1
+			receiverChainId
 		);
 
 		emit MessageSent(receiverAddr, message.value, message.sender, message.chainId, msgType);
